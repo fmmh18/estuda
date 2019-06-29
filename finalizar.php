@@ -5,7 +5,6 @@ include "app/model/Conexao.php";
 include "app/model/produtoModel.php";
 use App\model\produtoModel;
 $produtomodel = new produtoModel();
-$produtos = $produtomodel->listarProduto();
 
 ?>
 <!doctype html>
@@ -37,25 +36,44 @@ $produtos = $produtomodel->listarProduto();
     </div>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-            <a class="nav-link" href="carrinho"><i class="fa fa-shopping-cart"></i><sup><span class="badge badge-pill badge-danger"><?=count($_SESSION['carrinho'])?></span></sup></a>
+            <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i><sup><span class="badge badge-pill badge-danger"><?=count($_SESSION['carrinho'])?></span></sup></a>
         </li>
     </ul>
 </nav>
 <div class="container">
     <div class="row" style="margin-top: 5%">
-        <? foreach($produtos as $key => $value) { ?>
-            <div class="card m-auto" style="width: 18rem;margin-bottom: 10px !important;">
-                <div class="card-body">
-                <img src="https://s1.static.brasilescola.uol.com.br/artigos/-5be0989bbc0c9.jpg?i=https://brasilescola.uol.com.br/upload/conteudo/images/-5be0989bbc0c9.jpg" class="card-img-top" alt="...">
-                    <h5 class="card-title"><?=$value->titulo?></h5>
-                    <p class="card-text text-justify"><?=$value->descricao?></p>
-                    <p><b>R$ <?=number_format($value->valor,2,',','.')?></b></p>
-                    <input type="number" id="inputQtd<?=$value->id?>" class="form-control col-8 float-left" min="0" size="3" maxlength="3"/> <a href="javascript:void(0);" onclick="adicionar(<?=$value->id?>,document.getElementById('inputQtd<?=$value->id?>').value)" class="btn btn-primary col-3 float-right"><i class="fa fa-shopping-cart"></i></a>
+        <div class="col-6">
+            <p ><h5>Comprar com sua conta</h5></p>
+            <form method="post" action="action">
+                <input type="hidden" name="acao" value="finalizar-compra"/>
+                <div class="form-group">
+                    <label for="inputNome"><b>E-mail</b></label>
+                    <input type="text" class="form-control" id="inputNome" name="inputNome" placeholder="Nome">
                 </div>
-            </div>
-
-        <? }?>
+                <div class="form-group">
+                    <label for="inputSenha"><b>Senha</b></label>
+                    <input type="password" class="form-control" id="inputSenha" name="inputSenha" placeholder="Senha">
+                </div>
+                <input type="submit" name="button" value="Acessar" class="btn btn-primary float-right"/>
+            </form>
+        </div>
+        <div class="col-6">
+            <p><h5>Criar uma nova conta</h5></p>
+            <form method="post" action="action">
+                <input type="hidden" name="acao" value="finalizar-compra"/>
+                <div class="form-group">
+                    <label for="inputNome"><b>Nome</b></label>
+                    <input type="text" class="form-control" id="inputNome" name="inputNome" placeholder="Nome">
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail"><b>E-mail</b></label>
+                    <input type="email" class="form-control" id="inputEmail" name="inputEmail" placeholder="E-mail">
+                </div>
+                <input type="submit" name="button"  value="Cadastrar" class="btn btn-primary float-right"/>
+            </form>
+        </div>
     </div>
+    <div class="col-12">&nbsp;</div>
 </div>
 <nav class="navbar navbar-dark bg-secondary">
     <div class="col-12">&nbsp;</div>
@@ -64,20 +82,5 @@ $produtos = $produtomodel->listarProduto();
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-1.10.2.min.js" integrity="sha256-C6CB9UYIS9UJeqinPHWTHVqh/E1uhG5Twh+Y5qFQmYg=" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script>
-    function adicionar(id,val)
-    {
-        $.ajax({
-            type: "POST",
-            url: 'function.php',
-            data: { 'acao':'add','id':id,'qtd':val},
-            async: true,
-            dataType: 'html',
-            success: function(result,status) {
-                console.log(result);
-            }
-        });
-    }
-</script>
 </body>
 </html>
