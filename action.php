@@ -27,4 +27,7 @@ if($_POST['acao'] == 'finalizar-compra')
     $pedido = array('data'=>date('Y-m-d'),'totitens'=>$totalitem,'tot'=>$total);
     $insertpedido = $pedidomodel->cadastrarPedido($pedido);
     print_r($insertpedido);
+    foreach($_SESSION['carrinho'] as $key => $value) {
+
+    }
 }

@@ -12,10 +12,10 @@ class usuarioModel extends Conexao
 
     public function detalheUsuario($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE idusuario = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM usuario WHERE id = :id");
         $stmt->bindParam(":id",$id);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        return $stmt->fetchObject();
     }
 
     public function listarUsuario()

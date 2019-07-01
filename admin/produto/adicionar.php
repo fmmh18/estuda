@@ -1,9 +1,9 @@
 <?
-
-    include_once "../../app/model/Conexao.php";
-    include_once "../../app/model/pedidoModel.php";
-    $pedidomodel = new \App\model\pedidoModel();
-    $pedidos = $pedidomodel->listarPedido();
+$id = $_GET['id'];
+include_once "../../app/model/Conexao.php";
+include_once "../../app/model/produtoModel.php";
+$produtomodel = new \App\model\produtoModel();
+$produto = $produtomodel->detalheProduto($id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +86,7 @@
                             <span class="navbar-toggler-bar bar3"></span>
                         </button>
                     </div>
-                    <a class="navbar-brand" href="#pablo">Listar Usuários</a>
+                    <a class="navbar-brand" href="#pablo">Cadastrar Produto</a>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -97,28 +97,24 @@
         </nav>
         <div class="content">
             <div class="row">
-                <div class="col-12"><a href="adicionar" class="btn btn-primary float-right"><i class="fa fa-plus-square"></i> Adicionar</a></div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <td><b>#</b></td>
-                            <td><b>Nome</b></td>
-                            <td><b>E-mail</b></td>
-                            <td><b>Telefone</b></td>
-                            <td colspan="2"><b>&nbsp;</b></td>
-                        </tr>
-                    </thead>
-                    <? foreach($pedidos as $key => $value) { ?>
-                    <tr>
-                        <td><?=$value->id?></td>
-                        <td><?=$value->nome?></td>
-                        <td><?=$value->email?></td>
-                        <td><?=$value->telefone?></td>
-                        <td><a href="editar?id=<?=$value->id?>" class="btn btn-warning"><i class="fa fa-edit"></i></a></td>
-                        <td><a href="javascript:void(0)" onclick="excluir(<?=$value->id?>)" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
-                    </tr>
-                    <? } ?>
-                </table>
+                <div class="col-12">
+                    <form method="post" action="../../app/controller/produtoController.php?action=adicionar" id="forEdt">
+                        <input type="hidden" name="id" value="<?=$produto->id?>" />
+                        <div class="form-group">
+                            <label for="titulo">Titulo</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" value="<?=$produto->titulo?>" />
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao" value="<?=$produto->descricao?>" />
+                        </div>
+                        <div class="form-group">
+                            <label for="valor">Valor</label>
+                            <input type="text" class="form-control" id="valor" name="valor" value="<?=$produto->valor?>" />
+                        </div>
+                        <input type="submit" value="adicionar" class="btn btn-primary btn-block" name="acao" />
+                    </form>
+                </div>
             </div>
         </div>
         <footer class="footer footer-black  footer-white ">
@@ -156,26 +152,37 @@
 <script src="../../assets/js/core/bootstrap.min.js"></script>
 <script src="../../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
 <!--  Google Maps Plugin    -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/additional-methods.min.js"></script>
+<script>
+    $( "#forEdt" ).validate({
+        debug: true,
+        rules: {
+            nome:{
+                required: true
+            },
+            email:{
+                required: true
+            }
+        },
+        messages: {
+            nome:{required:'Campo nome é obrigatório.'},
+            email:{required:'Campo email é obrigatório.'}
+        }
+    });
+</script>
 <!-- Chart JS -->
 <script src="../../assets/js/plugins/chartjs.min.js"></script>
 <!--  Notifications Plugin    -->
 <script src="../../assets/js/plugins/bootstrap-notify.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../../assets/js/paper-dashboard.min.js?v=2.0.0" type="text/javascript"></script>
-<script>
-    function excluir(id)
-    {
-        if(confirm('Deseja excluir o registro?') == true){
-            window.location.href = "../../app/controller/usuarioController.php?action=deletar&id="+id;
-        }
-    }
-</script>
 <? if($_GET['msg'] == 1){ ?>
     <script>
         $.notify({
             title: "Sucesso",
-            message: "Excluído com sucesso"
+            message: "Cadastrado com sucesso"
         },{
             type: 'success'
         });
@@ -184,7 +191,7 @@
     <script>
         $.notify({
             title: "Erro",
-            message: "Erro ao excluir"
+            message: "Erro ao Cadastrar"
         },{
             type: 'danger'
         });

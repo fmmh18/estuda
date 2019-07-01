@@ -1,11 +1,16 @@
+<?
 
+    include_once "../../app/model/Conexao.php";
+    include_once "../../app/model/produtoModel.php";
+    $produtomodel = new \App\model\produtoModel();
+    $produtos = $produtomodel->listarProduto();
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../../assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="../../assets/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>
         Paper Dashboard 2 by Creative Tim
@@ -55,13 +60,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="javascript:void(0)">
+                    <a href="../produto/">
                         <i class="nc-icon nc-diamond"></i>
                         <p>Produtos</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../usuario/">
+                    <a href="javascript:void(0)">
                         <i class="nc-icon nc-pin-3"></i>
                         <p>Usuários</p>
                     </a>
@@ -92,16 +97,25 @@
         </nav>
         <div class="content">
             <div class="row">
+                <div class="col-12"><a href="adicionar" class="btn btn-primary float-right"><i class="fa fa-plus-square"></i> Adicionar</a></div>
                 <table class="table table-striped">
                     <thead>
-                    <tr>
-                        <td><b>#</b></td>
-                        <td><b>Título</b></td>
-                        <td><b>Descrição</b></td>
-                        <td><b>Valor</b></td>
-                        <td colspan="2"><b>&nbsp;</b></td>
-                    </tr>
+                        <tr>
+                            <td><b>#</b></td>
+                            <td><b>Título</b></td>
+                            <td><b>Valor</b></td>
+                            <td colspan="2"><b>&nbsp;</b></td>
+                        </tr>
                     </thead>
+                    <? foreach($produtos as $key => $value) { ?>
+                    <tr>
+                        <td><?=$value->id?></td>
+                        <td><?=$value->titulo?></td>
+                        <td><?=$value->valor?></td>
+                        <td><a href="editar?id=<?=$value->id?>" class="btn btn-warning"><i class="fa fa-edit"></i></a></td>
+                        <td><a href="javascript:void(0)" onclick="excluir(<?=$value->id?>)" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+                    </tr>
+                    <? } ?>
                 </table>
             </div>
         </div>
@@ -147,14 +161,33 @@
 <script src="../../assets/js/plugins/bootstrap-notify.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../../assets/js/paper-dashboard.min.js?v=2.0.0" type="text/javascript"></script>
-<!-- Paper Dashboard DEMO methods, don't include it in your project! -->
-<script src="../../assets/demo/demo.js"></script>
 <script>
-    $(document).ready(function() {
-        // Javascript method's body can be found in assets/assets-for-demo/js/demo.js
-        demo.initChartsPages();
-    });
+    function excluir(id)
+    {
+        if(confirm('Deseja excluir o registro?') == true){
+            window.location.href = "../../app/controller/usuarioController.php?action=deletar&id="+id;
+        }
+    }
 </script>
+<? if($_GET['msg'] == 1){ ?>
+    <script>
+        $.notify({
+            title: "Sucesso",
+            message: "Excluído com sucesso"
+        },{
+            type: 'success'
+        });
+    </script>
+<? }else if($_GET['msg'] == 2){ ?>
+    <script>
+        $.notify({
+            title: "Erro",
+            message: "Erro ao excluir"
+        },{
+            type: 'danger'
+        });
+    </script>
+<? } ?>
 </body>
 
 </html>

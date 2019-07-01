@@ -1,4 +1,10 @@
+<?
 
+    include_once "../../app/model/Conexao.php";
+    include_once "../../app/model/usuarioModel.php";
+    $usuariomodel = new \App\model\usuarioModel();
+    $usuarios = $usuariomodel->listarUsuario();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,6 +97,7 @@
         </nav>
         <div class="content">
             <div class="row">
+                <div class="col-12"><a href="adicionar" class="btn btn-primary float-right"><i class="fa fa-plus-square"></i> Adicionar</a></div>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -101,6 +108,16 @@
                             <td colspan="2"><b>&nbsp;</b></td>
                         </tr>
                     </thead>
+                    <? foreach($usuarios as $key => $value) { ?>
+                    <tr>
+                        <td><?=$value->id?></td>
+                        <td><?=$value->nome?></td>
+                        <td><?=$value->email?></td>
+                        <td><?=$value->telefone?></td>
+                        <td><a href="editar?id=<?=$value->id?>" class="btn btn-warning"><i class="fa fa-edit"></i></a></td>
+                        <td><a href="javascript:void(0)" onclick="excluir(<?=$value->id?>)" class="btn btn-danger"><i class="fa fa-trash"></i></a></td>
+                    </tr>
+                    <? } ?>
                 </table>
             </div>
         </div>
@@ -146,14 +163,33 @@
 <script src="../../assets/js/plugins/bootstrap-notify.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../../assets/js/paper-dashboard.min.js?v=2.0.0" type="text/javascript"></script>
-<!-- Paper Dashboard DEMO methods, don't include it in your project! -->
-<script src="../../assets/demo/demo.js"></script>
 <script>
-    $(document).ready(function() {
-        // Javascript method's body can be found in assets/assets-for-demo/js/demo.js
-        demo.initChartsPages();
-    });
+    function excluir(id)
+    {
+        if(confirm('Deseja excluir o registro?') == true){
+            window.location.href = "../../app/controller/usuarioController.php?action=deletar&id="+id;
+        }
+    }
 </script>
+<? if($_GET['msg'] == 1){ ?>
+    <script>
+        $.notify({
+            title: "Sucesso",
+            message: "Excluído com sucesso"
+        },{
+            type: 'success'
+        });
+    </script>
+<? }else if($_GET['msg'] == 2){ ?>
+    <script>
+        $.notify({
+            title: "Erro",
+            message: "Erro ao excluir"
+        },{
+            type: 'danger'
+        });
+    </script>
+<? } ?>
 </body>
 
 </html>
